@@ -1,541 +1,867 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lưu giữ tuổi thơ của bé - In ảnh kỷ niệm</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #fef7f7 0%, #f3e8ff 100%);
-        }
-        .product-card {
-            transition: all 0.3s ease;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 107, 157, 0.3);
-        }
-        .price-badge {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Memories - Lưu Giữ Khoảnh Khắc Đầu Đời</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #ffeef5 0%, #f0f8ff 50%, #fff5f5 100%);
+        }
+        
+        .promotion-flash {
+            animation: flash 2s infinite;
+        }
+        
+        @keyframes flash {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.7; }
+        }
+        
+        .slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+        
+        .slide-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .modal {
+            display: none;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .sticky-buttons {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            z-index: 1000;
+        }
+        
+        .btn-float {
+            display: block;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 60px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+        
+        .btn-float:hover {
+            transform: scale(1.1);
+        }
+        
+        .image-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .image-slider::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .slider-item {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+            margin-right: 10px;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .feedback-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .shadow-text {
+             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+    </style>
 </head>
-<body class="bg-pink-50">
-        <header class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <i class="fas fa-heart text-pink-500 text-3xl mr-3"></i>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">BabyMemories</h1>
-                    <p class="text-sm text-gray-600">Lưu giữ kỷ niệm quý giá</p>
-                </div>
-            </div>
-            <button class="btn-primary text-white px-6 py-3 rounded-full font-semibold">
-                <i class="fas fa-camera mr-2"></i>Gửi ảnh để in ngay
-            </button>
-        </div>
-    </header>
+<body class="bg-gray-50">
+    
+    <section class="gradient-bg min-h-screen flex flex-col justify-center items-center px-4 py-8">
+        
+        <div class="relative max-w-3xl mx-auto mb-8 slide-up w-full">
+            <img src="https://images.unsplash.com/photo-1604868189265-219ba714033b?q=80&w=1770&auto=format&fit=crop" alt="Bé yêu đáng yêu" class="w-full h-auto rounded-2xl shadow-2xl object-cover" style="max-height: 65vh;">
+            
+            <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl flex flex-col justify-center items-center p-4">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight text-center shadow-text">
+                    🌸 Lưu giữ khoảnh khắc đầu đời của bé yêu
+                </h1>
+                <p class="text-lg md:text-xl text-gray-100 text-center shadow-text">
+                    Biến những khoảnh khắc quý giá thành kỷ vật vĩnh cửu với chất lượng cao cấp
+                </p>
+            </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 mb-8 slide-up">
+            <button onclick="scrollToSection('products')" class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
+                🛍️ Xem Sản Phẩm
+            </button>
+            <button onclick="scrollToSection('showcase')" class="bg-white hover:bg-gray-50 text-pink-500 px-8 py-4 rounded-full font-semibold text-lg border-2 border-pink-500 transition-all transform hover:scale-105">
+                📸 Xem Mẫu Ảnh
+            </button>
+        </div>
+        
+        <div class="bg-red-500 text-white px-6 py-3 rounded-full promotion-flash shadow-lg slide-up">
+            <span class="font-bold">🎉 KHUYẾN MÃI: Giảm 15% cho đơn hàng đầu tiên!</span>
+        </div>
+    </section>
+    
+    <section id="showcase" class="py-16 px-4">
+        <div class="max-w-md mx-auto">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8 slide-up">
+                ✨ Sản Phẩm Chất Lượng Cao
+            </h2>
+            
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden slide-up relative">
+                    <div class="discount-badge">-15%</div>
+                    <img src="https://m.media-amazon.com/images/I/71WSonVcJqL.jpg" alt="Khung ảnh 12 tháng" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">🎂 Khung 12 Tháng Đầu Đời</h3>
+                        <p class="text-gray-600 text-sm mb-3">Ép gỗ cao cấp, in sắc nét từ ảnh điện thoại. Kèm dây treo và kẹp gỗ xinh xắn.</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-red-500 line-through text-sm">530.000đ</span>
+                                <span class="text-pink-600 font-bold text-xl ml-2">450.000đ</span>
+                            </div>
+                            <button onclick="scrollToSection('order')" class="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-pink-600 transition-all">
+                                Đặt Ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden slide-up relative">
+                    <div class="discount-badge">-12%</div>
+                    <img src="https://i.etsystatic.com/28657827/r/il/caf963/3640800739/il_570xN.3640800739_xu9m.jpg" alt="Khung ảnh gia đình" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">👨‍👩‍👧 Khung Ảnh Gia Đình</h3>
+                        <p class="text-gray-600 text-sm mb-3">Combo 3 khung: 1 ảnh lớn + 2 ảnh nhỏ. Ép gỗ có viền, móc treo sẵn chắc chắn.</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-red-500 line-through text-sm">445.000đ</span>
+                                <span class="text-pink-600 font-bold text-xl ml-2">390.000đ</span>
+                            </div>
+                            <button onclick="scrollToSection('order')" class="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-pink-600 transition-all">
+                                Đặt Ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="products" class="py-16 px-4 bg-white">
+        <div class="max-w-md mx-auto">
+            
+            <div class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-6 mb-8 shadow-lg slide-up relative">
+                <div class="discount-badge">-15%</div>
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-pink-800 mb-2">📦 Gói "12 Tháng Đầu Đời"</h3>
+                    <p class="text-gray-600 mb-4">12 ảnh 10x15cm ép gỗ mini xinh xắn</p>
+                    <div class="text-center mb-4">
+                        <span class="text-red-500 line-through text-lg">530.000đ</span>
+                        <span class="text-3xl font-bold text-pink-600 ml-2">450.000đ</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-4 mb-4">
+                    <img src="https://m.media-amazon.com/images/I/71TMRbx3oDL.jpg" alt="Gói 12 tháng" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Miễn phí dây treo và kẹp gỗ</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Ép gỗ cao cấp chống ẩm</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>In sắc nét từ ảnh điện thoại</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">Ảnh mẫu tham khảo:</p>
+                    <div class="image-slider">
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/71WSonVcJqL.jpg" alt="Mẫu 1" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/71cHqcs+KmL.jpg" alt="Mẫu 2" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/91QdO38WCuL._UF350,350_QL80_.jpg" alt="Mẫu 3" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://i.etsystatic.com/17205378/r/il/efc17c/2972548150/il_1080xN.2972548150_qmxl.jpg" alt="Mẫu 4" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="scrollToSection('order')" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-full text-lg transition-all transform hover:scale-105">
+                    💝 Đặt Gói 12 Tháng
+                </button>
+            </div>
+            
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 mb-8 shadow-lg slide-up relative">
+                <div class="discount-badge">-12%</div>
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-2">🖼️ Gói "Khung Ảnh Gia Đình"</h3>
+                    <p class="text-gray-600 mb-4">1 ảnh lớn 30x40cm + 2 ảnh nhỏ 15x21cm</p>
+                    <div class="text-center mb-4">
+                        <span class="text-red-500 line-through text-lg">445.000đ</span>
+                        <span class="text-3xl font-bold text-blue-600 ml-2">390.000đ</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-4 mb-4">
+                    <img src="https://i.etsystatic.com/21080495/r/il/836e19/2749246557/il_fullxfull.2749246557_p2pt.jpg" alt="Khung gia đình" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Ép gỗ có viền sang trọng</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Có móc treo sẵn chắc chắn</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Chất liệu cao cấp bền đẹp</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">Ảnh mẫu tham khảo:</p>
+                    <div class="image-slider">
+                        <div class="slider-item">
+                            <img src="https://i.etsystatic.com/28657827/r/il/caf963/3640800739/il_570xN.3640800739_xu9m.jpg" alt="Mẫu gia đình 1" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://i.etsystatic.com/21080495/r/il/836e19/2749246557/il_fullxfull.2749246557_p2pt.jpg" alt="Mẫu gia đình 2" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/71MKIik39tL._UF350,350_QL80_.jpg" alt="Mẫu gia đình 3" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://i.etsystatic.com/7453378/r/il/f8280a/3408686970/il_570xN.3408686970_qyma.jpg" alt="Mẫu gia đình 4" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="scrollToSection('order')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-full text-lg transition-all transform hover:scale-105">
+                    🏠 Đặt Khung Gia Đình
+                </button>
+            </div>
+            
+            <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-6 mb-8 shadow-lg slide-up relative">
+                <div class="discount-badge">HOT</div>
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-green-800 mb-2">📚 Gói "Chuyện Bé - Chuyện Nhà"</h3>
+                    <p class="text-gray-600 mb-4">Album 6 ảnh ép khung gỗ để bàn + hộp quà</p>
+                    <div class="text-center mb-4">
+                        <span class="text-3xl font-bold text-green-600">520.000đ</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-4 mb-4">
+                    <img src="https://m.media-amazon.com/images/I/81lsBkWqliL._UF350,350_QL80_.jpg" alt="Album chuyện bé" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Album gồm 6 ảnh ép khung gỗ để bàn</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Tặng kèm hộp quà xinh xắn</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>Thẻ tag ghi lời chúc cá nhân hóa</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">Ảnh mẫu tham khảo:</p>
+                    <div class="image-slider">
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/81lsBkWqliL._UF350,350_QL80_.jpg" alt="Album mẫu 1" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://i.etsystatic.com/17205378/r/il/efc17c/2972548150/il_1080xN.2972548150_qmxl.jpg" alt="Album mẫu 2" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/71WSonVcJqL.jpg" alt="Album mẫu 3" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                        <div class="slider-item">
+                            <img src="https://m.media-amazon.com/images/I/71TMRbx3oDL.jpg" alt="Album mẫu 4" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal(this.src)">
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="scrollToSection('order')" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-full text-lg transition-all transform hover:scale-105">
+                    📖 Đặt Album Chuyện Bé
+                </button>
+            </div>
+            
+        </div>
+    </section>
+    
+    <section class="py-12 px-4 bg-gray-50">
+        <div class="max-w-md mx-auto">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8 slide-up">✅ Chính Sách & Cam Kết</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('policy1')">
+                        🚚 Chính sách giao hàng
+                        <i class="fas fa-plus transform transition-transform" id="icon1"></i>
+                    </button>
+                    <div id="policy1" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        <ul class="space-y-2">
+                            <li>• Giao hàng toàn quốc trong 3-5 ngày làm việc</li>
+                            <li>• Đóng gói chống sốc, bảo vệ sản phẩm tuyệt đối</li>
+                            <li>• Kiểm tra ảnh chất lượng trước khi in và giao</li>
+                            <li>• Hỗ trợ đổi trả nếu sản phẩm có lỗi từ nhà sản xuất</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('policy2')">
+                        🎨 Chất lượng ảnh
+                        <i class="fas fa-plus transform transition-transform" id="icon2"></i>
+                    </button>
+                    <div id="policy2" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        <ul class="space-y-2">
+                            <li>• In từ file điện thoại vẫn đạt độ sắc nét cao</li>
+                            <li>• Công nghệ ép gỗ/chống ẩm hiện đại</li>
+                            <li>• Bảo hành bong tróc, phai màu 3 tháng</li>
+                            <li>• Tư vấn chọn ảnh để có chất lượng in tốt nhất</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('policy3')">
+                        📋 Quy trình đặt hàng
+                        <i class="fas fa-plus transform transition-transform" id="icon3"></i>
+                    </button>
+                    <div id="policy3" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        <ul class="space-y-2">
+                            <li><strong>Bước 1:</strong> Điền form thông tin bên dưới</li>
+                            <li><strong>Bước 2:</strong> Chọn gói sản phẩm phù hợp</li>
+                            <li><strong>Bước 3:</strong> Gửi ảnh qua Zalo để tư vấn</li>
+                            <li><strong>Bước 4:</strong> Xác nhận và thanh toán để bắt đầu in</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 px-4 bg-white">
+        <div class="max-w-md mx-auto">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8 slide-up">⭐ Khách Hàng Nói Gì</h2>
+            
+            <div class="feedback-grid">
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 shadow-sm slide-up">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <img src="https://images.squarespace-cdn.com/content/v1/6351a021c930ab682a5df3c4/ea134c7f-57b6-426e-85cc-5e3ccf74e9e7/review2.png" alt="Chị Mai" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Chị Mai Anh</h4>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm italic">"Chất lượng in ảnh rất đẹp, bé nhà mình rất thích xem lại những kỷ niệm. Shop tư vấn rất tận tình!"</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 shadow-sm slide-up">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <img src="https://www.fotoprint.ca/uploads/customer-feedback.jpg" alt="Anh Dũng" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Anh Dũng</h4>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm italic">"Gói 12 tháng đầu đời rất ý nghĩa, vợ chồng mình rất hài lòng. Sẽ giới thiệu cho bạn bè!"</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 shadow-sm slide-up">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-300 flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Chị Hương</h4>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm italic">"Khung ảnh gia đình in từ ảnh điện thoại mà vẫn rất sắc nét. Giao hàng nhanh, đóng gói cẩn thận!"</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 shadow-sm slide-up">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-300 flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Cô Linh</h4>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm italic">"Album 'Chuyện bé - Chuyện nhà' quá dễ thương! Cháu rất thích lật xem ảnh mình. Chất lượng xuất sắc!"</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 shadow-sm slide-up">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-green-300 flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Chị Nga</h4>
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm italic">"Dịch vụ tuyệt vời! Từ tư vấn đến sản phẩm cuối cùng đều hoàn hảo. Đã trở thành khách hàng thường xuyên!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="order" class="py-16 px-4 gradient-bg">
+        <div class="max-w-md mx-auto">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8 slide-up">📝 Đặt Hàng Ngay</h2>
+            
+            <div class="bg-white rounded-2xl shadow-lg p-6 slide-up">
+                <div class="mb-6">
+                    <h3 class="font-semibold text-lg text-gray-800 mb-3">📋 Hướng dẫn đặt hàng:</h3>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                            <span class="text-gray-600">Điền thông tin</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                            <span class="text-gray-600">Chọn gói</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                            <span class="text-gray-600">Gửi ảnh qua Zalo</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                            <span class="text-gray-600">Xác nhận & in</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="orderForm" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">👤 Tên khách hàng *</label>
+                        <input type="text" id="customerName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Nhập họ tên của bạn">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">📞 Số điện thoại *</label>
+                        <input type="tel" id="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="0123 456 789">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">📍 Địa chỉ *</label>
+                        <input type="text" id="address" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Số nhà, đường, quận/huyện, thành phố">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">🎁 Gói dịch vụ *</label>
+                        <select id="package" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                            <option value="">Chọn gói dịch vụ</option>
+                            <option value="12months">Gói "12 Tháng Đầu Đời" - 450.000đ</option>
+                            <option value="family">Gói "Khung Ảnh Gia Đình" - 390.000đ</option>
+                            <option value="story">Gói "Chuyện Bé - Chuyện Nhà" - 520.000đ</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg">
+                        ✅ Xác Nhận Đặt Hàng
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 px-4 bg-gray-50">
+        <div class="max-w-md mx-auto">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8 slide-up">❓ Câu Hỏi Thường Gặp</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('faq1')">
+                        📱 In từ ảnh điện thoại có rõ không?
+                        <i class="fas fa-plus transform transition-transform" id="faq-icon1"></i>
+                    </button>
+                    <div id="faq1" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        Hoàn toàn có thể! Chúng tôi sử dụng công nghệ in hiện đại, ảnh từ điện thoại (từ 2MP trở lên) sẽ in rất sắc nét. Chúng tôi cũng sẽ tư vấn bạn chọn ảnh có chất lượng tốt nhất.
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('faq2')">
+                        ✅ Có được kiểm tra ảnh trước khi in?
+                        <i class="fas fa-plus transform transition-transform" id="faq-icon2"></i>
+                    </button>
+                    <div id="faq2" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        Có! Sau khi nhận ảnh, chúng tôi sẽ gửi lại preview để bạn xác nhận trước khi tiến hành in. Bạn có thể yêu cầu chỉnh sửa nếu cần thiết.
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('faq3')">
+                        📊 Có hỗ trợ in số lượng lớn không?
+                        <i class="fas fa-plus transform transition-transform" id="faq-icon3"></i>
+                    </button>
+                    <div id="faq3" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        Có! Chúng tôi nhận đơn hàng từ 1 sản phẩm đến hàng trăm sản phẩm. Đơn hàng lớn sẽ có ưu đãi giá tốt hơn, liên hệ để được tư vấn chi tiết.
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('faq4')">
+                        🚚 Có ship toàn quốc không?
+                        <i class="fas fa-plus transform transition-transform" id="faq-icon4"></i>
+                    </button>
+                    <div id="faq4" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        Có! Chúng tôi giao hàng toàn quốc qua các đơn vị vận chuyển uy tín như Giao Hàng Nhanh, Viettel Post. Sản phẩm được đóng gói cẩn thận, chống sốc.
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('faq5')">
+                        ⏰ Giao hàng mất bao lâu?
+                        <i class="fas fa-plus transform transition-transform" id="faq-icon5"></i>
+                    </button>
+                    <div id="faq5" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        Thời gian sản xuất: 2-3 ngày làm việc. Thời gian vận chuyển: 1-2 ngày (nội thành HN/HCM), 2-3 ngày (tỉnh thành khác). Tổng cộng: 3-5 ngày làm việc.
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden slide-up">
+                    <button class="w-full px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 flex items-center justify-between" onclick="toggleAccordion('faq6')">
+                        💰 Hình thức thanh toán nào được hỗ trợ?
+                        <i class="fas fa-plus transform transition-transform" id="faq-icon6"></i>
+                    </button>
+                    <div id="faq6" class="hidden px-6 py-4 text-gray-600 text-sm border-t">
+                        Chúng tôi hỗ trợ: Chuyển khoản ngân hàng, ví điện tử (MoMo, ZaloPay), thanh toán khi nhận hàng (COD) với phí 30.000đ cho đơn hàng dưới 500.000đ.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="bg-gray-800 text-white py-12 px-4">
+        <div class="max-w-md mx-auto">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold mb-2">🌸 Baby Memories</h3>
+                <p class="text-gray-300">Lưu giữ khoảnh khắc đầu đời của bé yêu</p>
+            </div>
+            
+            <div class="space-y-8">
+                <div>
+                    <h4 class="font-semibold mb-4 text-pink-300">📞 Liên hệ nhanh</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone text-green-400"></i>
+                            <span>Hotline: 0123.456.789</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fab fa-telegram text-blue-400"></i>
+                            <span>Zalo: 0123.456.789</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope text-red-400"></i>
+                            <span>Email: hello@babymemories.vn</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-pink-300">🎨 Dịch vụ</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>• In ảnh kỷ niệm chất lượng cao</li>
+                        <li>• Khung ảnh gỗ cao cấp</li>
+                        <li>• Album ảnh thiết kế đẹp</li>
+                        <li>• Thiết kế theo yêu cầu</li>
+                        <li>• Tư vấn miễn phí 24/7</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4 text-pink-300">📋 Chính sách</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>• Chính sách đổi trả trong 7 ngày</li>
+                        <li>• Bảo hành sản phẩm 3 tháng</li>
+                        <li>• Hướng dẫn đặt hàng chi tiết</li>
+                        <li>• Chính sách vận chuyển minh bạch</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-sm text-gray-400">© 2024 Baby Memories. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <div class="sticky-buttons">
+        <a href="tel:0123456789" class="btn-float bg-green-500 hover:bg-green-600 text-white">
+            <i class="fas fa-phone"></i>
+        </a>
+        <a href="https://zalo.me/0123456789" class="btn-float bg-blue-500 hover:bg-blue-600 text-white">
+            <i class="fab fa-telegram"></i>
+        </a>
+        <a href="mailto:hello@babymemories.vn" class="btn-float bg-red-500 hover:bg-red-600 text-white">
+            <i class="fas fa-envelope"></i>
+        </a>
+    </div>
+    
+    <div id="imageModal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="relative max-w-sm mx-auto">
+            <img id="modalImage" src="" alt="Ảnh mẫu" class="w-full h-auto rounded-lg">
+            <button onclick="closeImageModal()" class="absolute top-2 right-2 bg-white rounded-full w-8 h-8 flex items-center justify-center text-gray-800 hover:bg-gray-100">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div id="zaloModal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-sm mx-auto text-center">
+            <div class="mb-6">
+                <i class="fab fa-telegram text-6xl text-blue-500 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">🎉 Đặt hàng thành công!</h3>
+                <p class="text-gray-600">Bây giờ hãy gửi ảnh cho chúng tôi qua Zalo để bắt đầu in nhé!</p>
+            </div>
+            
+            <div class="space-y-4">
+                <a href="https://zalo.me/0123456789" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-full text-lg transition-all transform hover:scale-105">
+                    📱 Gửi ảnh qua Zalo
+                </a>
+                <button onclick="closeZaloModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-full transition-all">
+                    Đóng
+                </button>
+            </div>
+            
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">📋 Lưu ý quan trọng:</h4>
+                <ul class="text-sm text-gray-600 text-left space-y-1">
+                    <li>• Gửi ảnh có độ phân giải cao nhất</li>
+                    <li>• Tránh ảnh bị mờ hoặc chụp nghiêng</li>
+                    <li>• Chúng tôi sẽ tư vấn chọn ảnh đẹp nhất</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-        <section class="gradient-bg py-16">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-                📸 Lưu giữ tuổi thơ của bé<br>
-                <span class="text-pink-500">mỗi khung ảnh là một khoảnh khắc quý giá</span>
-            </h2>
-            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Mỗi ngày bé lớn lên, bạn đã kịp lưu lại từng khoảnh khắc chưa? 
-                Từ bức ảnh đầu đời đến nụ cười đầu tiên – tất cả xứng đáng được trân trọng.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4 mb-12">
-                <button class="btn-primary text-white px-8 py-4 rounded-full font-semibold text-lg">
-                    <i class="fas fa-images mr-2"></i>Xem mẫu sản phẩm
-                </button>
-                <button class="bg-white text-pink-500 border-2 border-pink-500 px-8 py-4 rounded-full font-semibold text-lg hover:bg-pink-50">
-                    <i class="fab fa-facebook-messenger mr-2"></i>Tư vấn miễn phí
-                </button>
-            </div>
-            <p class="text-lg text-gray-700 font-semibold">
-                👉 In ảnh lên khung treo tường hoặc để bàn – để mỗi lần nhìn lại là một lần mỉm cười.
-            </p>
-        </div>
-    </section>
-
-        <section class="py-16 bg-white">
-        <div class="max-w-6xl mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">
-                🖼️ Gallery Sản Phẩm Thực Tế
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://m.media-amazon.com/images/I/71TMRbx3oDL._UF894,1000_QL80_.jpg" alt="Khung ảnh 12 tháng đầu đời" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Khung 12 tháng đầu đời</h4>
-                        <p class="text-gray-600">Ghi lại từng milestone quan trọng của bé</p>
-                    </div>
-                </div>
-                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://m.media-amazon.com/images/I/71h4lNI8OAL.jpg" alt="Khung ảnh collage" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Khung ảnh Collage</h4>
-                        <p class="text-gray-600">Nhiều ảnh trong một khung đẹp mắt</p>
-                    </div>
-                </div>
-                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://i.etsystatic.com/44829850/r/il/f6909f/6911432118/il_570xN.6911432118_gkyf.jpg" alt="Khung ảnh gia đình" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Khung ảnh gia đình</h4>
-                        <p class="text-gray-600">Kỷ niệm cả gia đình trong một khung</p>
-                    </div>
-                </div>
-                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://m.media-amazon.com/images/I/81AMBpqOoXL._UF894,1000_QL80_.jpg" alt="Khung ảnh treo tường" class="w-full h-64 object-cover">
-                    <div class="p-6">
-            _            <h4 class="font-bold text-lg mb-2">Khung treo tường</h4>
-                        <p class="text-gray-600">Trang trí nhà với kỷ niệm đẹp</p>
-                    </div>
-                </div>
-                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://melissaarlenaphotography.com/wp-content/uploads/2024/09/1.jpg" alt="Trưng bày trong nhà" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Trưng bày trong nhà</h4>
-                        <p class="text-gray-600">Ý tưởng trang trí không gian sống</p>
-                    </div>
-                </div>
-                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://images.squarespace-cdn.com/content/v1/61bf8b2a00a752334afb7d61/d31d6003-5a11-4f8d-b0e1-37317d16d2a2/framed+baby+pictures+in+nursery.jpg" alt="Phòng bé với ảnh" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Phòng bé với ảnh kỷ niệm</h4>
-                        <p class="text-gray-600">Không gian ấm áp cho bé yêu</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-        <section class="py-16 gradient-bg">
-        <div class="max-w-6xl mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">
-                📦 Các Gói Sản Phẩm Phổ Biến
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden product-card">
-                    <div class="bg-gradient-to-r from-pink-400 to-purple-400 p-6 text-white text-center">
-                        <i class="fas fa-baby text-4xl mb-3"></i>
-                        <h4 class="text-xl font-bold">🧸 GÓI "12 THÁNG ĐẦU ĐỜI"</h4>
-                    </div>
-                    <div class="p-6">
-                        <ul class="space-y-3 mb-6">
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>12 ảnh 10x15cm ép gỗ mini</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Có thể để bàn hoặc treo dây</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Miễn phí treo dây & kẹp gỗ</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Đóng hộp quà đẹp</li>
-                        </ul>
-                        <div class="text-center">
-                            <div class="price-badge text-white px-4 py-2 rounded-full inline-block mb-4">
-                                <span class="text-2xl font-bold">450.000đ</span>
-                            </div>
-                            <button class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
-                                Chọn gói này
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden product-card border-4 border-pink-400">
-                    <div class="bg-gradient-to-r from-pink-500 to-red-400 p-6 text-white text-center relative">
-                        <div class="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold">
-                            Phổ biến
-                        </div>
-                        <i class="fas fa-home text-4xl mb-3"></i>
-                        <h4 class="text-xl font-bold">🎁 GÓI "KHUNG ẢNH GIA ĐÌNH NHỎ"</h4>
-                    </div>
-                    <div class="p-6">
-                        <ul class="space-y-3 mb-6">
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>1 ảnh lớn (30x40cm)</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>2 ảnh nhỏ (15x21cm)</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Ép gỗ có viền, móc treo sẵn</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Chất lượng cao cấp</li>
-                        </ul>
-                        <div class="text-center">
-                            <div class="price-badge text-white px-4 py-2 rounded-full inline-block mb-4">
-                                <span class="text-2xl font-bold">390.000đ</span>
-          _                 </div>
-                            <button class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
-                                Chọn gói này
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden product-card">
-                    <div class="bg-gradient-to-r from-purple-400 to-blue-400 p-6 text-white text-center">
-                        <i class="fas fa-book text-4xl mb-3"></i>
-                        <h4 class="text-xl font-bold">📚 GÓI "CHUYỆN BÉ - CHUYỆN NHÀ"</h4>
-                    </div>
-                    <div class="p-6">
-                        <ul class="space-y-3 mb-6">
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Album 6 ảnh ép khung gỗ để bàn</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Kèm hộp quà sang trọng</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Tặng thẻ tag ghi lời chúc</li>
-                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Thiết kế cá nhân hóa</li>
-                        </ul>
-                        <div class="text-center">
-                            <div class="price-badge text-white px-4 py-2 rounded-full inline-block mb-4">
-                                <span class="text-2xl font-bold">520.000đ</span>
-                            </div>
-                            <button class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
-                                Chọn gói này
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-12">
-                <p class="text-lg text-gray-700 mb-4">
-                    🎨 <strong>Tùy chọn chất liệu:</strong> Gỗ, MDF, Canvas, Ép bóng, Ép lụa...
-                </p>
-                <button class="btn-primary text-white px-8 py-4 rounded-full font-semibold text-lg">
-                    <i class="fas fa-palette mr-2"></i>Xem thêm tùy chọn
-                </button>
-            </div>
-        </div>
-    </section>
-
-        <section class="py-16 bg-white">
-        <div class="max-w-6xl mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">
-                👩‍👧‍👦 Khách Hàng Nói Gì Về Chúng Tôi
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center mb-4">
-                        <img src="https://i.pravatar.cc/60?img=1" alt="Khách hàng" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold text-gray-800">Chị Linh - Hà Nội</h4>
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 italic">
-                        "Mỗi lần nhìn khung ảnh bé từ lúc lọt lòng, mình lại xúc động. Chất lượng in rất đẹp, khung gỗ chắc chắn. Cảm ơn shop đã giúp lưu giữ kỷ niệm quý giá này!"
-                    </p>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center mb-4">
-                        <img src="https://i.pravatar.cc/60?img=5" alt="Khách hàng" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold text-gray-800">Anh Minh - TP.HCM</h4>
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 italic">
-                        "In ảnh quá đẹp, đóng khung chắc chắn – ship nhanh và cẩn thận. Vợ chồng mình rất hài lòng với bộ khung 12 tháng đầu đời của con."
-                    </p>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center mb-4">
-                        <img src="https://i.pravatar.cc/60?img=9" alt="Khách hàng" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold text-gray-800">Chị Mai - Đà Nẵng</h4>
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 italic">
-                        "Tư vấn nhiệt tình, gửi mockup trước khi in nên mình yên tâm. Sản phẩm nhận được đúng như mong đợi. Sẽ ủng hộ shop lâu dài!"
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-        <section class="py-16 gradient-bg">
-        <div class="max-w-2xl mx-auto px-4">
-                        <div class="bg-gray-100 rounded-lg p-5 mb-3 shadow-sm">
-                <div class="flex items-center font-bold text-lg text-gray-800 cursor-pointer">
-                    <i class="fas fa-caret-down text-pink-600 mr-3" style="font-size: 1.5rem;"></i>
-                    <i class="fas fa-box-open text-pink-600 w-8 text-2xl mr-3"></i>
-                    <h3 class="text-pink-600">Chính sách & Giao hàng</h3>
-                </div>
-                <ul class="pt-3 pl-16 space-y-2 text-gray-700">
-                    <li class="flex items-center"><i class="fas fa-check text-gray-600 mr-2"></i>Giao hàng toàn quốc</li>
-                    <li class="flex items-center"><i class="fas fa-check text-gray-600 mr-2"></i>Đóng gói chống sốc</li>
-                    <li class="flex items-center"><i class="fas fa-check text-gray-600 mr-2"></i>Kiểm tra ảnh trước khi in</li>
-                </ul>
-            </div>
-
-                        <div class="bg-gray-100 rounded-lg p-5 mb-3 shadow-sm">
-                <div class="flex items-center font-bold text-lg text-gray-800 cursor-pointer">
-                    <i class="fas fa-caret-down text-pink-600 mr-3" style="font-size: 1.5rem;"></i>
-                    <i class="fas fa-image text-pink-600 w-8 text-2xl mr-3"></i>
-                    <h3 class="text-pink-600">Chất lượng ảnh</h3>
-                </div>
-                <ul class="pt-3 pl-16 space-y-2 text-gray-700">
-                    <li class="flex items-center"><i class="fas fa-check text-gray-600 mr-2"></i>In từ file điện thoại sắc nét</li>
-                    <li class="flex items-center"><i class="fas fa-check text-gray-600 mr-2"></i>Ép gỗ/chống ẩm/bảo hành bong tróc 3 tháng</li>
-                </ul>
-            </div>
-
-                        <div class="bg-gray-100 rounded-lg p-5 shadow-sm">
-                <div class="flex items-center font-bold text-lg text-gray-800 cursor-pointer">
-                    <i class="fas fa-caret-right text-pink-600 mr-3" style="font-size: 1.5rem;"></i>
-                    <i class="fas fa-sync-alt text-pink-600 w-8 text-2xl mr-3"></i>
-                    <h3 class="text-pink-600">Quy trình đặt hàng</h3>
-                </div>
-            </div>
-        </div>
-    </section>
-        
-        <section class="py-16 gradient-bg">
-        <div class="max-w-6xl mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">
-                💰 Bảng Giá & Đặt Hàng Nhanh
-            </h3>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                <div class="bg-white rounded-xl shadow-xl p-8">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-                        🧾 Bảng Giá Chi Tiết
-                    </h4>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center py-3 border-b">
-                            <span class="font-semibold">Ảnh 10x15cm (ép gỗ)</span>
-                            <span class="text-pink-500 font-bold">35.000đ</span>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b">
-                            <span class="font-semibold">Ảnh 15x21cm (có khung)</span>
-                            <span class="text-pink-500 font-bold">65.000đ</span>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b">
-                            <span class="font-semibold">Ảnh 20x30cm (canvas)</span>
-                            <span class="text-pink-500 font-bold">120.000đ</span>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b">
-                            <span class="font-semibold">Ảnh 30x40cm (khung gỗ)</span>
-                            <span class="text-pink-500 font-bold">190.000đ</span>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b">
-                            <span class="font-semibold">Album 6 ảnh (hộp quà)</span>
-                            <span class="text-pink-500 font-bold">450.000đ</span>
-                        </div>
-                    </div>
-                    <div class="mt-6 p-4 bg-yellow-100 rounded-lg">
-                        <p class="text-sm text-yellow-800">
-                            <i class="fas fa-gift mr-2"></i>
-                            <strong>Ưu đãi:</strong> Đặt từ 3 sản phẩm giảm 10%, từ 5 sản phẩm giảm 15%
-                        </p>
-                    </div>
-                </div>
-
-                                <div class="bg-white rounded-xl shadow-xl p-8">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-                        📝 Form Đặt Hàng Nhanh
-                    </h4>
-                    <form class="space-y-4">
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Họ tên *</label>
-                            <input type="text" class="w-full px-4 py-3 border-2 border-pink-200 rounded-lg focus:border-pink-400 focus:outline-none" placeholder="Nhập họ tên của bạn">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Số điện thoại *</label>
-                            <input type="tel" class="w-full px-4 py-3 border-2 border-pink-200 rounded-lg focus:border-pink-400 focus:outline-none" placeholder="Nhập số điện thoại">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Link Zalo/Facebook</label>
-                            <input type="url" class="w-full px-4 py-3 border-2 border-pink-200 rounded-lg focus:border-pink-400 focus:outline-none" placeholder="Link profile để liên hệ">
-          _             </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Chọn gói/sản phẩm *</label>
-                            <select class="w-full px-4 py-3 border-2 border-pink-200 rounded-lg focus:border-pink-400 focus:outline-none">
-                                <option>Gói "12 tháng đầu đời" - 450.000đ</option>
-                                <option>Gói "Khung ảnh gia đình nhỏ" - 390.000đ</option>
-                                <option>Gói "Chuyện bé - Chuyện nhà" - 520.000đ</option>
-                                <option>Tùy chỉnh theo yêu cầu</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Ghi chú</label>
-                            <textarea class="w-full px-4 py-3 border-2 border-pink-200 rounded-lg focus:border-pink-400 focus:outline-none h-24" placeholder="Yêu cầu đặc biệt, số lượng ảnh..."></textarea>
-                        </div>
-                        <button type="submit" class="w-full btn-primary text-white py-4 rounded-lg font-semibold text-lg">
-                            <i class="fas fa-paper-plane mr-2"></i>Gửi đơn đặt hàng
-                        </button>
-                    </form>
-                    <div class="mt-6 flex justify-center space-x-4">
-                        <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-semibold transition-all">
-                            <i class="fab fa-facebook-messenger mr-2"></i>Messenger
-                        </a>
-                        <a href="#" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-semibold transition-all">
-                            <i class="fab fa-whatsapp mr-2"></i>Zalo
-                        </a>
-                        <a href="tel:0123456789" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-full font-semibold transition-all">
-                            <i class="fas fa-phone mr-2"></i>Hotline
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-        <section class="py-16 bg-white">
-        <div class="max-w-4xl mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">
-                ❓ Câu Hỏi Thường Gặp
-            </h3>
-            <div class="space-y-6">
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-start">
-                        <div class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1">
-        _                 <i class="fas fa-question text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg text-gray-800 mb-2">Ảnh chụp điện thoại có in được không?</h4>
-                            <p class="text-gray-700">✅ <strong>Được!</strong> Shop sẽ kiểm tra chất lượng ảnh trước khi in và tư vấn cách chụp ảnh đẹp hơn nếu cần.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-start">
-                        <div class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1">
-                            <i class="fas fa-question text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg text-gray-800 mb-2">Có thể in chữ lên ảnh không?</h4>
-                            <p class="text-gray-700">✅ <strong>Có thể!</strong> Thêm tên bé, ngày sinh, lời chúc yêu thương hoặc quote ý nghĩa lên ảnh.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-start">
-                        <div class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1">
-                            <i class="fas fa-question text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg text-gray-800 mb-2">Bao lâu thì nhận được hàng?</h4>
-                            <p class="text-gray-700">✅ <strong>Nội thành:</strong> 2–3 ngày. <strong>Toàn quốc:</strong> 3–5 ngày tùy tỉnh. Giao hàng COD hoặc chuyển khoản trước.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-start">
-                        <div class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1">
-                            <i class="fas fa-question text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg text-gray-800 mb-2">Có được xem trước sản phẩm không?</h4>
-                            <p class="text-gray-700">✅ <strong>Có!</strong> Shop sẽ gửi mockup (ảnh mẫu) để bạn xem và chỉnh sửa trước khi in chính thức.</p>
-                        </div>
-          _           </div>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-start">
-                        <div class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1">
-                            <i class="fas fa-question text-sm"></i>
-              _         </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg text-gray-800 mb-2">Nếu không hài lòng có đổi trả được không?</h4>
-                            <p class="text-gray-700">✅ <strong>Được!</strong> Đổi trả trong 3 ngày nếu sản phẩm lỗi hoặc không đúng yêu cầu. Chi phí ship đổi trả shop chịu.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-pink-50 rounded-xl p-6 shadow-lg">
-                    <div class="flex items-start">
-                        <div class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1">
-                            <i class="fas fa-question text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg text-gray-800 mb-2">Có làm được khung ảnh theo yêu cầu riêng không?</h4>
-                  _       <p class="text-gray-700">✅ <strong>Có!</strong> Nhận làm theo thiết kế riêng, size đặc biệt. Liên hệ để tư vấn chi tiết và báo giá.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-        <footer class="bg-gray-800 text-white py-12">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-heart text-pink-500 text-2xl mr-2"></i>
-                        <h4 class="text-xl font-bold">BabyMemories</h4>
-                    </div>
-                    <p class="text-gray-300 mb-4">Lưu giữ những khoảnh khắc quý giá nhất của bé yêu với chất lượng tốt nhất.</p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-700 transition-all">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="bg-pink-500 w-10 h-10 rounded-full flex items-center justify-center hover:bg-pink-600 transition-all">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-600 transition-all">
-                            <i class="fab fa-whatsapp"></i>
-      _               </a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Liên hệ nhanh</h4>
-                    <div class="space-y-2">
-                        <p><i class="fas fa-phone text-pink-500 mr-2"></i>Hotline: 0123.456.789</p>
-                        <p><i class="fab fa-facebook-messenger text-pink-500 mr-2"></i>Zalo: 0123.456.789</p>
-                        <p><i class="fas fa-envelope text-pink-500 mr-2"></i>Email: hello@babymemories.vn</p>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Dịch vụ</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li>• In ảnh kỷ niệm</li>
-                        <li>• Khung ảnh cao cấp</li>
-                        <li>• Album ảnh đẹp</li>
-                        <li>• Thiết kế theo yêu cầu</li>
-                        <li>• Tư vấn miễn phí</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Chính sách</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li>• Chính sách đổi trả</li>
-                        <li>• Bảo hành sản phẩm</li>
-                        <li>• Hướng dẫn đặt hàng</li>
-                        <li>• Chính sách vận chuyển</li>
-          _             <li>• Bảo mật thông tin</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p class="text-gray-400">© 2024 BabyMemories. Tất cả quyền được bảo lưu. | Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM</p>
-            </div>
-        </div>
-    </footer>
-
-        <div class="fixed bottom-6 right-6 flex flex-col space-y-4 z-50">
-        <a href="tel:0123456789" class="bg-pink-500 hover:bg-pink-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110">
-            <i class="fas fa-phone text-xl"></i>
-        </a>
-        <a href="#" class="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110">
-            <i class="fab fa-whatsapp text-xl"></i>
-        </a>
-        <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110">
-            <i class="fab fa-facebook-messenger text-xl"></i>
-        </a>
-    </div>
+    <script>
+        // Smooth scrolling
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.slide-up');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll(); // Run once on load
+        
+        // Accordion functionality
+        function toggleAccordion(id) {
+            const element = document.getElementById(id);
+            const icon = document.getElementById(id.includes('faq') ? id.replace('faq', 'faq-icon') : 'icon' + id.slice(-1));
+            
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+                icon.classList.add('rotate-45');
+            } else {
+                element.classList.add('hidden');
+                icon.classList.remove('rotate-45');
+            }
+        }
+        
+        // Image modal
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = src;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Zalo modal
+        function openZaloModal() {
+            const modal = document.getElementById('zaloModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeZaloModal() {
+            const modal = document.getElementById('zaloModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modals when clicking outside
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageModal();
+            }
+        });
+        
+        document.getElementById('zaloModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeZaloModal();
+            }
+        });
+        
+        // Form submission
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('customerName').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                package: document.getElementById('package').value,
+                timestamp: new Date().toLocaleString('vi-VN')
+            };
+            
+            try {
+                // Replace 'xxxx' with your actual SheetDB API ID
+                const response = await fetch('https://sheetdb.io/api/v1/xxxx', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: [formData]
+                    })
+                });
+                
+                if (response.ok) {
+                    // Reset form
+                    document.getElementById('orderForm').reset();
+                    // Show Zalo popup
+                    openZaloModal();
+                } else {
+                    alert('Có lỗi xảy ra, vui lòng thử lại hoặc liên hệ trực tiếp qua Zalo: 0123.456.789');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra, vui lòng thử lại hoặc liên hệ trực tiếp qua Zalo: 0123.456.789');
+            }
+        });
+    </script>
 </body>
 </html>
